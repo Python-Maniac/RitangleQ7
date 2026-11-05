@@ -1,0 +1,66 @@
+from tkinter import *
+import math
+window=Tk()
+canvas=Canvas(window, height=700, width=1275)
+canvas.pack()
+points=[]
+points2=[[0, 0]]
+n=-1000
+scalex=50
+scaley=0.25
+def maponto1():
+    global n
+    for i in range(2000):
+        if n!=-1:
+            x=(5+2*n)/(1+n)
+            y=x-2*n
+            points.append([x, y])
+            if n%10==0: print(points[i-1])
+        n+=1
+
+
+yoffset=0
+
+def onkey(event):
+    global yoffset
+    if event.char=="w":
+        yoffset-=10
+    else:
+        yoffset+=10
+    createscreen()
+xdiff1=0
+xdiff2=0
+
+def maponto2():
+    global n
+    n=3
+    for i in range(53):
+        points2.append([points2[len(points2)-1][0]+n, points2[len(points2)-1][1]])
+        n=n/(3**0.5)
+        points2.append([points2[len(points2)-1][0], points2[len(points2)-1][1]+n])
+        n=n/(3**0.5)
+        points2.append([points2[len(points2)-1][0]-n, points2[len(points2)-1][1]])
+        n=n/(3**0.5)
+        points2.append([points2[len(points2)-1][0], points2[len(points2)-1][1]-n])
+        n=n/(3**0.5)
+
+maponto1()
+maponto2()
+def createscreen():
+    global points, yoffset
+    canvas.delete("all")
+    for i in range(len(points)):
+        canvas.create_oval(points[i][0]*scalex-1+300, points[i][1]*-scaley+550-1+yoffset, points[i][0]*scalex+1+300, points[i][1]*-scaley+550+1+yoffset, fill="blue", outline="")
+        if i!=0:
+            canvas.create_line(points[i][0]*scalex+300, points[i][1]*-scaley+550+yoffset, points[i-1][0]*scalex+300, points[i-1][1]*-scaley+550+yoffset, fill="light blue")
+    # for i in range(100):
+    #    canvas.create_line((i-10)*scalex+300, 545+yoffset, (i-100)*scalex+300, 555+yoffset)
+    # for i in range(100):
+    #     canvas.create_line(295, (i-10)*-scaley+550+yoffset, 305, (i-100)*-scaley+550+yoffset)
+    #canvas.create_text(20, 20, text=f"BLUE: {points[len(points)-1][0]}, {points[len(points)-1][1]}", anchor="w")
+    canvas.create_line(300, 0, 300, 700+yoffset)
+    canvas.create_line(0, 550+yoffset, 1275, 550+yoffset)
+createscreen()
+
+window.bind("<Key>", onkey)
+window.mainloop()
